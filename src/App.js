@@ -1,23 +1,19 @@
-import logo from './logo.svg';
+import { Navigation } from '@mui/icons-material';
 import './App.css';
+import HeaderDiv from './components/header';
+import Notes from './components/notes';
+import NavigationRoute from './components/navigation';
+import BinDiv from './components/bin';
+
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {/* <HeaderDiv/>
+      <Notes/> */}
+      <NavigationRoute/>
+      {/* <BinDiv/> */}
+      {/* <Testing2/> */}
     </div>
   );
 }

@@ -1,0 +1,44 @@
+[debug] [2023-07-31T04:34:07.951Z] ----------------------------------------------------------------------
+[debug] [2023-07-31T04:34:07.954Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\sudhakar\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js login
+[debug] [2023-07-31T04:34:07.954Z] CLI Version:   12.4.6
+[debug] [2023-07-31T04:34:07.955Z] Platform:      win32
+[debug] [2023-07-31T04:34:07.955Z] Node Version:  v18.12.1
+[debug] [2023-07-31T04:34:07.956Z] Time:          Mon Jul 31 2023 10:04:07 GMT+0530 (India Standard Time)
+[debug] [2023-07-31T04:34:07.956Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2023-07-31T04:34:07.961Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[info] Already logged in as thunder07001@gmail.com
+[debug] [2023-07-31T04:34:14.582Z] Error: Timed out.
+    at Timeout._onTimeout (C:\Users\sudhakar\AppData\Roaming\npm\node_modules\firebase-tools\lib\utils.js:254:49)
+    at listOnTimeout (node:internal/timers:564:17)
+    at process.processTimers (node:internal/timers:507:7)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2023-07-31T04:34:22.607Z] ----------------------------------------------------------------------
+[debug] [2023-07-31T04:34:22.609Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\sudhakar\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2023-07-31T04:34:22.610Z] CLI Version:   12.4.6
+[debug] [2023-07-31T04:34:22.610Z] Platform:      win32
+[debug] [2023-07-31T04:34:22.610Z] Node Version:  v18.12.1
+[debug] [2023-07-31T04:34:22.611Z] Time:          Mon Jul 31 2023 10:04:22 GMT+0530 (India Standard Time)
+[debug] [2023-07-31T04:34:22.611Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2023-07-31T04:34:22.615Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2023-07-31T04:34:22.655Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2023-07-31T04:34:22.655Z] > authorizing via signed-in user (thunder07001@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\My Folder\Visual code programs\Bengalore Training\Google keep notes\google-keep-notes
+
+Before we get started, keep in mind:
+
+  * You are currently outside your home directory
+
+[debug] [2023-07-31T04:34:23.795Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2023-07-31T04:34:23.796Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
