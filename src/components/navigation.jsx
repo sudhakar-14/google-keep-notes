@@ -101,6 +101,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 export default function NavigationRoute() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [searchText, setSearchText] = React.useState("")
 
   const handleDrawerOpen = () => {
     setOpen(!open);
@@ -142,7 +143,7 @@ export default function NavigationRoute() {
           <span>
             <FontAwesomeIcon icon={faSearch}/>
           </span>
-          <input type="" name="" placeholder='Search'/> 
+          <input type="text" name="" placeholder='Search' onChange={(e)=>setSearchText(e.target.value)}/> 
         </div>
         <div className='header-right'>
             <span>
@@ -236,7 +237,7 @@ export default function NavigationRoute() {
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
         <Routes>
-          <Route path='/' element={<NotesDiv/>}/>
+          <Route path='/' element={<NotesDiv searchText={searchText} setSearchText={setSearchText}/>}/>
           <Route path='bin' element={<BinDiv/>}/>
           <Route path='archive' element={<ArchiveDiv/>}/>
           <Route path='reminder' element={<ReminderDiv/>}/>

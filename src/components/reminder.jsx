@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFileArrowDown, faLightbulb, faTrashCan, faPalette } from '@fortawesome/free-solid-svg-icons'
+import { faFileArrowDown, faLightbulb, faTrashCan, faPalette, faThumbtack } from '@fortawesome/free-solid-svg-icons'
 import { onValue, ref, update } from 'firebase/database'
 import { db } from '../firebase'
 
@@ -21,7 +21,7 @@ function ReminderDiv() {
         const data = snapShot.val()
         if(snapShot.exists()){
           Object.values(data).map((project)=>{
-            if(project.reminder === true){
+            if(project.reminder === true && project.pin === false){
               getPost.push(project)
               setNotes(getPost)
             }
@@ -111,6 +111,18 @@ function ReminderDiv() {
     setShowPopover(!showPopover)
   }
 
+  const handleChangePinTrue = (id) =>{
+    const query = ref(db,'notes') 
+    onValue(query,(snapShot)=>{
+      const data = snapShot.val()
+      Object.keys(data).map((project)=>{
+        if(project === id){
+          return update(ref(db,`notes/${project}`),{pin : true, reminder : false})
+        }
+      })
+    })
+  }
+
   return (
     <>
     <div className='notes' style={{filter: showPopover? "blur(2px)":"none"}}>
@@ -124,9 +136,16 @@ function ReminderDiv() {
             notes.length?
             notes.map((item)=>(
               <div className='note-item' key={item.id} style={{backgroundColor: item.backGroundColor}}>
-                <div className='bin-text' onClick={()=>handleShowPopover(item.id)}>
-                  <span>{item?.title}</span>
-                  <span>{item?.description}</span>
+                <div className='bin-div'>
+                  <div className='bin-text' onClick={()=>handleShowPopover(item.id)}>
+                    <span>{item?.title}</span>
+                    <span>{item?.description}</span>
+                  </div>
+                  <div className='bin-div-pin-icon' onClick={()=>handleChangePinTrue(item.id)}>
+                    <span>
+                      <FontAwesomeIcon style={{color:'rgb(73, 73, 73)'}} icon={faThumbtack}/>
+                    </span>
+                  </div>
                 </div>
                 <div className='bin-option-icons'>
                   <span>

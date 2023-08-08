@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './notes.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBell, faFileArrowDown, faPalette, faPen, faPenFancy, faTrashCan } from '@fortawesome/free-solid-svg-icons'
+import { faBell, faFileArrowDown, faPalette, faPen, faPenFancy, faThumbtack, faTrashCan } from '@fortawesome/free-solid-svg-icons'
 import { faSquareCheck,faImage } from '@fortawesome/free-regular-svg-icons'
 import { getDatabase, onValue, ref, set, update } from 'firebase/database'
 import { db } from '../firebase'
@@ -11,7 +11,7 @@ import moment from 'moment'
 
 
 
-function NotesDiv() {
+function NotesDiv({searchText,setSearchText}) {
 
   const [expand,setExpand] = useState(false)
   const [title,setTitle] = useState("")
@@ -23,20 +23,53 @@ function NotesDiv() {
 
   useEffect(()=>{
     const readData = async () =>{
-      const getPost = []
+      var getPost = []
       const query = ref(db,"notes")
       onValue(query,(snapShot)=>{
         const data = snapShot.val()
         if(snapShot.exists()){
           Object.values(data).map((project)=>{
             getPost.push(project)
-            setNotes(getPost)
+            if(searchText === ""){
+              setNotes(getPost)
+            } else {
+              console.log(Boolean("testing".includes(searchText)),getPost)
+              let filterSearch = getPost.filter(data=>(data.title).includes(searchText))
+              console.log(filterSearch,getPost)
+              setNotes(filterSearch)
+            }
           })
         }
       })
     }
     readData()
-  },[])
+  },[searchText])
+
+  const handleSubmit = () =>{
+    try{
+      function writeUserData(){
+        const db = getDatabase()
+        const id = uuidv4()
+        set(ref(db,'notes/'+id),{
+          title : title,
+          description : description,
+          id : id,
+          pin : false,
+          reminder : false,
+          archive : false,
+          bin : false,
+          backGroundColor : "transperant",
+          noteCreated : moment().format('YYYYMMDD')
+        })
+      }
+      writeUserData()
+    } catch(err) {
+      alert(err)
+    }
+    setTitle("")
+    setDescription("")
+    setExpand(!expand)
+  }
 
   const handleChangeReminder = (id) =>{
     const query = ref(db,'notes')
@@ -83,31 +116,6 @@ function NotesDiv() {
     })
   }
 
-  const handleSubmit = () =>{
-    try{
-      function writeUserData(){
-        const db = getDatabase()
-        const id = uuidv4()
-        set(ref(db,'notes/'+id),{
-          title : title,
-          description : description,
-          id : id,
-          reminder : false,
-          archive : false,
-          bin : false,
-          backGroundColor : "transperant",
-          noteCreated : moment().format('YYYYMMDD')
-        })
-      }
-      writeUserData()
-    } catch(err) {
-      alert(err)
-    }
-    setTitle("")
-    setDescription("")
-    setExpand(!expand)
-  }
-
   const handleShowPopover = (id) =>{
     setCurrentId(id)
     setShowPopover(!showPopover)
@@ -125,7 +133,7 @@ function NotesDiv() {
           else if(title === "" && description === ""){
             return
           }
-          else if(title == ""){
+          else if(title === ""){
             return update(ref(db,`notes/${project}`),{description : description})
           }
           else{
@@ -137,6 +145,30 @@ function NotesDiv() {
     setTitle("")
     setDescription("")
     setShowPopover(!showPopover)
+  }
+
+  const handleChangePinTrue = (id) =>{
+    const query = ref(db,'notes') 
+    onValue(query,(snapShot)=>{
+      const data = snapShot.val()
+      Object.keys(data).map((project)=>{
+        if(project === id){
+          return update(ref(db,`notes/${project}`),{pin : true})
+        }
+      })
+    })
+  }
+
+  const handleChangePinFalse = (id) =>{
+    const query = ref(db,'notes') 
+    onValue(query,(snapShot)=>{
+      const data = snapShot.val()
+      Object.keys(data).map((project)=>{
+        if(project === id){
+          return update(ref(db,`notes/${project}`),{pin : false})
+        }
+      })
+    })
   }
 
   return (
@@ -183,14 +215,64 @@ function NotesDiv() {
           </div>
           <div className='note-div' style={{filter: showPopover? "blur(2px)":"none"}}>
           {
-            notes.length?
             notes.map((item)=>{
-              if(item.reminder === false && item.archive === false && item.bin === false){
+              if(item.pin === true){
               return(
               <div className='note-item' key={item.id} style={{backgroundColor: item.backGroundColor}}>
-                <div className='bin-text' onClick={()=>handleShowPopover(item.id)}>
-                  <span>{item?.title}</span>
-                  <span>{item?.description}</span>
+                <div className='bin-div'>
+                  <div className='bin-text' onClick={()=>handleShowPopover(item.id)}>
+                    <span>{item?.title}</span>
+                    <span>{item?.description}</span>
+                  </div>
+                  <div className='bin-div-pin-icon' onClick={()=>handleChangePinFalse(item.id)}>
+                    <span>
+                      <FontAwesomeIcon icon={faThumbtack} beat/>
+                    </span>
+                  </div>
+                </div>
+                <div className='bin-option-icons'>
+                  <span>
+                    <FontAwesomeIcon icon={faBell} onClick={()=>handleChangeReminder(item.id)}/>
+                  </span>
+                  <span>
+                    <FontAwesomeIcon icon={faFileArrowDown} onClick={()=>handleChangeArchive(item.id)}/>
+                  </span>
+                  <span>
+                    <FontAwesomeIcon icon={faTrashCan} onClick={()=>handleChangeBin(item.id)}/>
+                  </span>
+                  <span className='color-icon' onClick={()=>setColorShow(!colorShow)}>
+                    <FontAwesomeIcon icon={faPalette}/>
+                    <div className='color-boxes' style={{display: colorShow? "flex":"none"}}>
+                      <span onClick={()=>handleChangeColor(item.id,"lightblue")}></span>
+                      <span onClick={()=>handleChangeColor(item.id,"lightcoral")}></span>
+                      <span onClick={()=>handleChangeColor(item.id,"lightgreen")}></span>
+                      <span onClick={()=>handleChangeColor(item.id,"lightpink")}></span>
+                      <span onClick={()=>handleChangeColor(item.id,"transperant")}></span>
+                    </div>
+                  </span>
+                </div>
+              </div>
+              )}
+              })
+            }
+            </div>
+          <div className='note-div' style={{filter: showPopover? "blur(2px)":"none"}}>
+          {
+            notes.length?
+            notes.map((item)=>{
+              if(item.reminder === false && item.archive === false && item.bin === false && item.pin === false){
+              return(
+              <div className='note-item' key={item.id} style={{backgroundColor: item.backGroundColor}}>
+                <div className='bin-div'>
+                  <div className='bin-text' onClick={()=>handleShowPopover(item.id)}>
+                    <span>{item?.title}</span>
+                    <span>{item?.description}</span>
+                  </div>
+                  <div className='bin-div-pin-icon' onClick={()=>handleChangePinTrue(item.id)}>
+                    <span>
+                      <FontAwesomeIcon style={{color:'rgb(73, 73, 73)'}} icon={faThumbtack}/>
+                    </span>
+                  </div>
                 </div>
                 <div className='bin-option-icons'>
                   <span>

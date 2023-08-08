@@ -44,41 +44,6 @@
     outline: none;
 }
 
-/* .notes{
-    display:flex;
-    padding: 25px 30px;
-} */
-
-
-/* aside{
-    padding: 10px 30px;
-    display: flex;
-    gap: 20px;
-} */
-
-/* nav{
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-    width: 30px;
-    font-size: 22px;
-    color: rgb(97, 96, 96);
-    z-index: 1;
-    background-color: white;
-} */
-
-/* .nav-menu{
-    width: 200px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 34px;
-    font-size: 15px;
-    position: relative;
-    left: -200px;
-    transition: 0.3s;
-} */
-
 main{
     display: flex;
     flex-direction: column;
@@ -95,7 +60,6 @@ main>div:nth-child(1){
 .title-note-input{
     width: 50%;
     height: auto;
-    /* padding: 23px 15px; */
     display: flex;
     flex-direction: column;
     gap: 2px;
@@ -142,21 +106,10 @@ main>div:nth-child(1){
     border-radius: 2px;
 }
 
-/* main>div:nth-child(1)>input{
-    width: 50%;
-    height: 35px;
-    padding: 23px 15px;
-    font-size: 15px;    
-    border: none;
-    border-radius: 5px;
-    box-shadow: 0px 1.5px 8px 0px #888888;
-} */
-
 .outside-box{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* border: 1px solid black; */
     width: 50%;
     box-shadow: 0px 1.5px 8px 0px #888888;
     padding: 10px 15px;
@@ -167,24 +120,12 @@ main>div:nth-child(1){
     font-size: 17px;
 }
 
-/* main>div:nth-child(1)>div{
-    z-index: 1;
-    font-size: 20px;
-    display: flex;
-    translate: -150px 0;
-    color: rgb(97, 96, 96);
-} */
-
-/* .notes-input-icon-div>span:nth-child(2){
-    padding: 0 30px;
-} */
-
 .note-div{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 10px;
     width: 100%;
-    /* transition: 3s ease; */
+    margin-bottom: 15px;
 }
 
 .note-item{
@@ -200,6 +141,16 @@ main>div:nth-child(1){
     position: relative;
 }
 
+.bin-div{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.bin-div-pin-icon{
+    opacity: 0;
+}
+
 .bin-option-icons{
     opacity: 0;
     color: rgb(73, 73, 73);
@@ -207,6 +158,11 @@ main>div:nth-child(1){
 
 .note-item:hover{
     .bin-option-icons{
+        opacity: 1;
+        transition: opacity 0.3s;
+    }
+
+    .bin-div-pin-icon{
         opacity: 1;
         transition: opacity 0.3s;
     }
@@ -296,19 +252,6 @@ main>div:nth-child(1){
 }
 
 @media only screen and (max-width:481px){
-
-    /* header{
-        padding: 10px 2px;
-    }
-
-    .header-left>img{
-        padding: 0 5px;
-        width: 50px;
-    }
-
-    .header-right>span:nth-child(2){
-        padding: 0 10px;
-    } */
 
     .note-div{
         grid-template-columns: 1fr;
