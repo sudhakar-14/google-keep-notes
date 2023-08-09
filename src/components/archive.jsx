@@ -5,7 +5,7 @@ import { onValue, ref, update } from 'firebase/database'
 import { db } from '../firebase'
 
 
-function ArchiveDiv() {
+function ArchiveDiv({searchText}) {
 
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
@@ -24,14 +24,21 @@ function ArchiveDiv() {
           Object.values(data).map((project)=>{
             if(project.archive === true && project.pin === false){
               getPost.push(project)
-              setNotes(getPost)
+              if(searchText === ""){
+                setNotes(getPost)
+              } else {
+                console.log(Boolean("testing".includes(searchText)),getPost)
+                let filterSearch = getPost.filter(data=>(data.title).includes(searchText))
+                console.log(filterSearch,getPost)
+                setNotes(filterSearch)
+              }
             }
           })
         }
       })
     }
     readData()
-  },[])
+  },[searchText])
 
   const handleChangeNotes = (id) =>{
     const query = ref(db,'notes')
@@ -128,7 +135,7 @@ function ArchiveDiv() {
     <>
     <div className='notes' style={{filter: showPopover? "blur(2px)":"none"}}>
       <main>
-        <div style={{marginBottom:"50px"}}>
+        <div style={{marginBottom:"50px"}} className='title-div'>
           <span>Archive</span>
         </div>
         <div className='note-div'>
@@ -169,12 +176,7 @@ function ArchiveDiv() {
                   </span>
                 </div>
               </div>
-              )) : 
-              <div>
-                <span>
-                  No Records Found
-                </span>
-              </div>
+              )) : null
           }
         </div>
       </main>
@@ -197,6 +199,14 @@ function ArchiveDiv() {
             </div>
             )}
           })
+        }
+      </div>
+      <div className='no-records-div'>
+        {
+          !notes.length?
+          <div>
+            No Records Found
+          </div> : null
         }
       </div>
   </>

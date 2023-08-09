@@ -237,10 +237,10 @@ export default function NavigationRoute() {
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
         <Routes>
-          <Route path='/' element={<NotesDiv searchText={searchText} setSearchText={setSearchText}/>}/>
-          <Route path='bin' element={<BinDiv/>}/>
-          <Route path='archive' element={<ArchiveDiv/>}/>
-          <Route path='reminder' element={<ReminderDiv/>}/>
+          <Route path='/' element={<NotesDiv searchText={searchText}/>}/>
+          <Route path='bin' element={<BinDiv searchText={searchText}/>}/>
+          <Route path='archive' element={<ArchiveDiv searchText={searchText}/>}/>
+          <Route path='reminder' element={<ReminderDiv searchText={searchText}/>}/>
         </Routes>
       </Box>
     </Box>

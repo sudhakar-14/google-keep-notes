@@ -5,7 +5,7 @@ import { onValue, ref, update } from 'firebase/database'
 import { db } from '../firebase'
 
 
-function ReminderDiv() {
+function ReminderDiv({searchText}) {
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [notes,setNotes] = useState([])
@@ -23,14 +23,21 @@ function ReminderDiv() {
           Object.values(data).map((project)=>{
             if(project.reminder === true && project.pin === false){
               getPost.push(project)
-              setNotes(getPost)
+              if(searchText === ""){
+                setNotes(getPost)
+              } else {
+                console.log(Boolean("testing".includes(searchText)),getPost)
+                let filterSearch = getPost.filter(data=>(data.title).includes(searchText))
+                console.log(filterSearch,getPost)
+                setNotes(filterSearch)
+              }
             }
           })
         }
       })
     }
     readData()
-  },[])
+  },[searchText])
 
   const handleChangeNotes = (id) =>{
     const query = ref(db,'notes')
@@ -127,7 +134,7 @@ function ReminderDiv() {
     <>
     <div className='notes' style={{filter: showPopover? "blur(2px)":"none"}}>
       <main>
-        <div style={{marginBottom:"50px"}}>
+        <div style={{marginBottom:"50px"}} className='title-div'>
           <span>Reminder</span>
         </div>
         
@@ -169,12 +176,7 @@ function ReminderDiv() {
                   </span>
                 </div>
               </div>
-              )) : 
-              <div>
-                <span>
-                  No Records Found
-                </span>
-              </div>
+              )) : null
           }
         </div>
       </main>
@@ -197,6 +199,14 @@ function ReminderDiv() {
             </div>
             )}
           })
+        }
+      </div>
+      <div className='no-records-div'>
+        {
+          !notes.length?
+          <div>
+            No Records Found
+          </div> : null
         }
       </div>
   </>

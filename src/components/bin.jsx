@@ -6,7 +6,7 @@ import { onValue, ref, remove, update } from 'firebase/database'
 import { db } from '../firebase'
 import moment from 'moment'
 
-function BinDiv() {
+function BinDiv({searchText}) {
 
   const [notes,setNotes] = useState([])
 
@@ -20,14 +20,21 @@ function BinDiv() {
           Object.values(data).map((project)=>{
             if(project.bin === true){
               getPost.push(project)
-              setNotes(getPost)
+              if(searchText === ""){
+                setNotes(getPost)
+              } else {
+                console.log(Boolean("testing".includes(searchText)),getPost)
+                let filterSearch = getPost.filter(data=>(data.title).includes(searchText))
+                console.log(filterSearch,getPost)
+                setNotes(filterSearch)
+              }
             }
           })
         }
       })
     }
     readData()
-  },[])
+  },[searchText])
 
   const handleChangeDelete = (id) =>{
     const query = ref(db,'notes')
@@ -69,8 +76,8 @@ function BinDiv() {
     <>
       <div className='notes'>
         <main>
-          <div style={{marginBottom:"50px"}}>
-            <span>Bin</span>
+          <div style={{marginBottom:"50px"}} className='title-div'>
+            <span>Notes in the Recycle Bin are deleted after 30 days.</span>
           </div>
           <div className='note-div'>
           {
@@ -90,15 +97,18 @@ function BinDiv() {
                   <FontAwesomeIcon icon={faTrashRestore} onClick={()=>handleChangeRestore(item.id)}/>
                 </div>
               </div>
-              )}) : 
-              <div>
-                <span>
-                  No Records Found
-                </span>
-              </div>
+              )}) : null
           }
         </div>
         </main>
+      </div>
+      <div className='no-records-div'>
+        {
+          !notes.length?
+          <div>
+            No Records Found
+          </div> : null
+        }
       </div>
     </>
   )

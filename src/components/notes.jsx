@@ -297,12 +297,7 @@ function NotesDiv({searchText,setSearchText}) {
                 </div>
               </div>
               )}
-              }) : 
-              <div>
-                <span>
-                  No Records Found
-                </span>
-              </div>
+              }) : null
           }
         </div>
         </main>
@@ -325,6 +320,14 @@ function NotesDiv({searchText,setSearchText}) {
             </div>
             )}
           })
+        }
+      </div>
+      <div className='no-records-div'>
+        {
+          !notes.length?
+          <div>
+            No Records Found
+          </div> : null
         }
       </div>
     </>

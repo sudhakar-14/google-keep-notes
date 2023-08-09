@@ -208,6 +208,17 @@ main>div:nth-child(1){
     background-color: white;
 }
 
+.no-records-div{
+    font-size: 40px;
+    font-weight: bold;
+    color: #888888;
+}
+
+.title-div{
+    font-size: 25px;
+    color: #888888;
+}
+
 
 
 @media only screen and (max-width:1024px){
