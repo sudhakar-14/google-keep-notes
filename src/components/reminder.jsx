@@ -5,7 +5,7 @@ import { onValue, ref, update } from 'firebase/database'
 import { db } from '../firebase'
 
 
-function ReminderDiv({searchText}) {
+function ReminderDiv({searchText,currentUserId}) {
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [notes,setNotes] = useState([])
@@ -21,16 +21,16 @@ function ReminderDiv({searchText}) {
         const data = snapShot.val()
         if(snapShot.exists()){
           Object.values(data).map((project)=>{
-            if(project.reminder === true && project.pin === false){
+            if(project.reminder === true && project.pin === false && project.user === currentUserId){
               getPost.push(project)
               if(searchText === ""){
                 setNotes(getPost)
               } else {
-                console.log(Boolean("testing".includes(searchText)),getPost)
                 let filterSearch = getPost.filter(data=>(data.title).includes(searchText))
-                console.log(filterSearch,getPost)
                 setNotes(filterSearch)
               }
+            } else {
+              setNotes(getPost)
             }
           })
         }

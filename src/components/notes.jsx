@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import './notes.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBell, faFileArrowDown, faPalette, faPen, faPenFancy, faThumbtack, faTrashCan } from '@fortawesome/free-solid-svg-icons'
+import { faBell, faFileArrowDown, faPalette, faPen, faPenFancy, faThumbtack, faTrashCan, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { faSquareCheck,faImage } from '@fortawesome/free-regular-svg-icons'
-import { getDatabase, onValue, ref, set, update } from 'firebase/database'
+import { equalTo, getDatabase, onValue, orderByChild, orderByKey, orderByValue, query, ref, set, update } from 'firebase/database'
 import { db } from '../firebase'
 import { v4 as uuidv4} from 'uuid'
 import moment from 'moment'
@@ -11,8 +11,10 @@ import moment from 'moment'
 
 
 
-function NotesDiv({searchText,setSearchText}) {
 
+function NotesDiv({searchText,currentUserId}) {
+
+  const [loading, setLoading] = useState(true)
   const [expand,setExpand] = useState(false)
   const [title,setTitle] = useState("")
   const [description,setDescription] = useState("")
@@ -24,21 +26,28 @@ function NotesDiv({searchText,setSearchText}) {
   useEffect(()=>{
     const readData = async () =>{
       var getPost = []
-      const query = ref(db,"notes")
-      onValue(query,(snapShot)=>{
+      const queries = await query(ref(db,"notes"),orderByChild("user"),equalTo(currentUserId))
+      onValue(queries,(snapShot)=>{
         const data = snapShot.val()
         if(snapShot.exists()){
           Object.values(data).map((project)=>{
-            getPost.push(project)
-            if(searchText === ""){
-              setNotes(getPost)
-            } else {
-              console.log(Boolean("testing".includes(searchText)),getPost)
-              let filterSearch = getPost.filter(data=>(data.title).includes(searchText))
-              console.log(filterSearch,getPost)
-              setNotes(filterSearch)
-            }
+            // if(project.user === currentUserId){
+              getPost.push(project)
+              if(searchText === ""){
+                setNotes(getPost)
+                setLoading(false)
+              } else {
+                let filterSearch = getPost.filter(data=>(data.title).includes(searchText))
+                setNotes(filterSearch)
+                setLoading(false)
+              }
+          //   } else {
+          //     setNotes(getPost)
+          //     setLoading(false)
+          //  }
           })
+        } else {
+          alert("something went wrong")
         }
       })
     }
@@ -59,12 +68,13 @@ function NotesDiv({searchText,setSearchText}) {
           archive : false,
           bin : false,
           backGroundColor : "transperant",
-          noteCreated : moment().format('YYYYMMDD')
+          noteCreated : moment().format('YYYYMMDD'),
+          user : currentUserId
         })
       }
       writeUserData()
     } catch(err) {
-      alert(err)
+      alert(err.message)
     }
     setTitle("")
     setDescription("")
@@ -302,6 +312,9 @@ function NotesDiv({searchText,setSearchText}) {
         </div>
         </main>
       </div>
+      <div style={{display: loading? "block":"none"}}>
+          <FontAwesomeIcon style={{fontSize:"30px"}} icon={faSpinner} spin />
+      </div>
       <div className='popover-wrapper-div' style={{opacity: showPopover? "1":"0"}}>
         {
           notes.map((item)=>{
@@ -322,9 +335,9 @@ function NotesDiv({searchText,setSearchText}) {
           })
         }
       </div>
-      <div className='no-records-div'>
+      <div className='no-records-div' style={{display: loading? "none":"block"}}>
         {
-          !notes.length?
+          !notes.length? 
           <div>
             No Records Found
           </div> : null

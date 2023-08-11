@@ -17,9 +17,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLightbulb,faBell,faTrashCan,faPencil,faFileArrowDown  } from '@fortawesome/free-solid-svg-icons'
 import NotesDiv from './notes';
 import BinDiv from './bin';
-import { Link, Route, Routes } from 'react-router-dom';
+import { Link, Route, Routes, useNavigate } from 'react-router-dom';
 import ArchiveDiv from './archive';
 import ReminderDiv from './reminder';
+import { onAuthStateChanged, signOut } from 'firebase/auth'
+import { auth } from '../firebase';
 
 
 
@@ -62,7 +64,6 @@ const AppBar = styled(MuiAppBar, {
   backgroundColor:"white",
   borderBottom:"1px solid rgba(0, 0, 0, 0.12)",
   padding:"0px",  
-  // zIndex: theme.zIndex.drawer + 1,
   boxShadow:"none",
   alignItems:"stretch",
   transition: theme.transitions.create(['width', 'margin'], {
@@ -99,9 +100,29 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export default function NavigationRoute() {
+
+  const navigate = useNavigate()
+
+  var iconMenu = [faLightbulb,faBell,faPencil,faFileArrowDown,faTrashCan]
+  var RouteMenu = ["/notes","reminder","","archive","bin"]
+
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [searchText, setSearchText] = React.useState("")
+  const [currentAvatarLetter, setCurrentAvatarLetter] = React.useState(null)
+  const [currentUserName, setCurrentUserName] = React.useState("")
+  const [currentUserEmail, setCurrentUserEmail] = React.useState(null)
+  const [showUserProfile, setShowUserProfile] = React.useState(false)
+  const [currentUserId, setCurrentUserId] = React.useState("")
+
+  React.useEffect(()=>{
+    onAuthStateChanged(auth,(user)=>{
+      setCurrentUserName(user.displayName)
+      setCurrentAvatarLetter(user.displayName.split("")[0].toUpperCase())
+      setCurrentUserEmail(user.email)
+      setCurrentUserId(user.uid)
+    })
+  },[])
 
   const handleDrawerOpen = () => {
     setOpen(!open);
@@ -111,27 +132,13 @@ export default function NavigationRoute() {
     setOpen(!open);
   };
 
-  var iconMenu = [faLightbulb,faBell,faPencil,faFileArrowDown,faTrashCan]
-  var RouteMenu = ["/","reminder","","archive","bin"]
+  const handleSignout = async() =>{
+      await signOut(auth).then(()=> navigate("/"))
+      .catch((err)=>alert(err.message))
+  }
 
   return (
     <Box sx={{ display: 'flex' }}>
-      {/* <CssBaseline/> */}
-      
-       
-      {/* <IconButton
-      style={{backgroundColor:"red"}}
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{
-              marginRight: 5,
-              ...(open && { display: 'none' }),
-            }}
-          >
-            
-          </IconButton> */}
       <AppBar position="fixed" open={open} style={{}}>
       <header>
         <div className='header-left'>
@@ -155,17 +162,13 @@ export default function NavigationRoute() {
             <span>
               <FontAwesomeIcon icon={faGear}/>
             </span>
+            <div className='user-profile-div' onClick={()=>setShowUserProfile(!showUserProfile)}>
+              <div className='user-profile'>
+                <span>{currentAvatarLetter}</span>
+              </div>
+            </div>
         </div>
       </header>
-      
-      {/* <HeaderDiv/> */}
-      {/* <MenuIcon  style={{zIndex:"999",backgroundColor:"red"}}/> */}
-        {/* <Toolbar>
-
-          <Typography variant="h6" noWrap component="div">
-            Mini variant drawer
-          </Typography>
-        </Toolbar> */}
       </AppBar>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
@@ -173,76 +176,60 @@ export default function NavigationRoute() {
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </DrawerHeader>
-        {/* <Divider /> */}
-        {/* <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List> */}
-        {/* <Divider /> */}
         <List>
           {['Notes', 'Reminders', 'Edit labels', 'Archive', 'Bin'].map((text, index) => (
             <ListItem key={index} disablePadding sx={{ display: 'block' }}>
               <Link to={RouteMenu[index]} className='drawer-menu-items'>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                  color: 'black'
-                  
-                }}
-                // faLightbulb,faBell,faTrashCan,faPencil,faFileArrowDown
-              >
-                <ListItemIcon
-                style={{fontSize:"22px"}}
+                <ListItemButton
                   sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
+                    minHeight: 48,
+                    justifyContent: open ? 'initial' : 'center',
+                    px: 2.5,
+                    color: 'black'
+                    
                   }}
                 >
-                  
-                    <FontAwesomeIcon icon={iconMenu[index]}/>
-                  
-                  
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
+                    <ListItemIcon
+                    style={{fontSize:"22px"}}
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : 'auto',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      
+                        <FontAwesomeIcon icon={iconMenu[index]}/>
+                      
+                      
+                    </ListItemIcon>
+                    <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
               </Link>
             </ListItem>
           ))}
         </List>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box className='note-box' component="main" sx={{ flexGrow: 1, p: 3, zIndex: 0 }} style={{filter: showUserProfile? "blur(9px)" : "blur(0px)"}}>
         <DrawerHeader />
         <Routes>
-          <Route path='/' element={<NotesDiv searchText={searchText}/>}/>
-          <Route path='bin' element={<BinDiv searchText={searchText}/>}/>
-          <Route path='archive' element={<ArchiveDiv searchText={searchText}/>}/>
-          <Route path='reminder' element={<ReminderDiv searchText={searchText}/>}/>
+          <Route path='' element={<NotesDiv searchText={searchText} currentUserId={currentUserId}/>}/>
+          <Route path='bin' element={<BinDiv searchText={searchText} currentUserId={currentUserId}/>}/>
+          <Route path='archive' element={<ArchiveDiv searchText={searchText} currentUserId={currentUserId}/>}/>
+          <Route path='reminder' element={<ReminderDiv searchText={searchText} currentUserId={currentUserId}/>}/>
         </Routes>
       </Box>
+      <div className='current-user-profile-div' style={{display: showUserProfile? "flex" : "none"}}>
+          <div className='current-user-profile'>
+            <span>
+            <span style={{fontWeight:"bold"}}>User Name</span> : {currentUserName}
+            </span>
+            <span>
+              <span style={{fontWeight:"bold"}}>Email ID</span> : {currentUserEmail}
+            </span>
+            {/* <span style={{fontWeight:"bold",cursor:"pointer"}}>Change Password</span> */}
+            <span onClick={handleSignout} style={{fontWeight:"bold",cursor:"pointer"}}>Log Out</span>
+          </div>
+      </div>
     </Box>
   );
 }

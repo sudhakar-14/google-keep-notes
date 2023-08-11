@@ -3,7 +3,6 @@ header{
     display: grid;
     grid-template-columns: 0.5fr 1.5fr 1fr;
     align-items: center;
-    /* justify-content: space-between; */
 }
 
 .header-left{
@@ -53,6 +52,7 @@ header{
 .header-right{
     display: flex;
     justify-content: flex-end;
+    align-items: center;
     font-size: 20px;
     color: rgb(97, 96, 96);
 }
@@ -61,26 +61,59 @@ header{
     padding: 0 20px;
 }
 
-/* .css-12i7wg6-MuiPaper-root-MuiDrawer-paper{
-    border-right: none;
-} */
-
 .drawer-menu-items{
     text-decoration: none;
 }
 
+.user-profile-div{
+    padding-left: 20px;
+}
+
+.user-profile{
+    width: 26px;
+    height: 26px;
+    background-color: lightgray;
+    color: black;
+    border-radius: 30px;
+    border:solid 1px black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.user-profile>span{
+    font-size: 15px;
+    font-weight: bolder;
+    /* text-align: center; */
+}
+
+.note-box{
+    position: relative;
+}
+
+.current-user-profile-div{
+    width: 100%;
+    justify-content: center;
+    position: absolute;
+    top: 190px;
+}
+
+.current-user-profile{
+    background-color:deeppink;
+    width: 25rem;
+    height: 10rem;
+    border: solid 1px magenta;
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+}
 
 @media only screen and (max-width: 481px){
-    /* .header-middle>input{
-        display: none;
-    } */
 
     header{
         align-items: flex-end;
     }
-    /* .header-middle>span{
-        width: 100%;
-        translate: 10px 0;
-        font-size: 20px;
-    } */
 }

@@ -6,7 +6,7 @@ import { onValue, ref, remove, update } from 'firebase/database'
 import { db } from '../firebase'
 import moment from 'moment'
 
-function BinDiv({searchText}) {
+function BinDiv({searchText,currentUserId}) {
 
   const [notes,setNotes] = useState([])
 
@@ -18,16 +18,16 @@ function BinDiv({searchText}) {
         const data = snapShot.val()
         if(snapShot.exists()){
           Object.values(data).map((project)=>{
-            if(project.bin === true){
+            if(project.bin === true && project.user === currentUserId){
               getPost.push(project)
               if(searchText === ""){
                 setNotes(getPost)
               } else {
-                console.log(Boolean("testing".includes(searchText)),getPost)
                 let filterSearch = getPost.filter(data=>(data.title).includes(searchText))
-                console.log(filterSearch,getPost)
                 setNotes(filterSearch)
               }
+            } else {
+              setNotes(getPost)
             }
           })
         }
